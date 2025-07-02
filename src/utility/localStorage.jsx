@@ -9,28 +9,46 @@
  * - JSON serialization/deserialization
  * - Server-side rendering compatibility
  * - Dark mode preference management
+ * - Theme preference management
  * - Generic user preference management with namespacing
  * - localStorage availability detection
  * 
  * @example
- * import { getLocalStorageItem, setLocalStorageItem } from './localStorage'
+ * import { getItem, setItem } from './localStorage'
  * 
  * // Store and retrieve data
- * setLocalStorageItem('userSettings', { theme: 'dark', lang: 'en' })
- * const settings = getLocalStorageItem('userSettings', {})
+ * setItem('userSettings', { theme: 'dark', lang: 'en' })
+ * const settings = getItem('userSettings', {})
  * 
  * @example
- * import { getDarkModePreference, setDarkModePreference } from './localStorage'
+ * import { getDarkMode, setDarkMode, getTheme, setTheme } from './localStorage'
  * 
- * // Dark mode management
- * const mode = getDarkModePreference() // 'dark', 'light', or null
- * setDarkModePreference('dark')
+ * // Dark mode and theme management
+ * const mode = getDarkMode() // 'dark', 'light', or null
+ * setDarkMode('dark')
+ * const theme = getTheme() // theme name or 'default'
+ * setTheme('ocean')
  */
 
+// =============================================================================
+// CORE LOCALSTORAGE OPERATIONS
+// =============================================================================
+
 /**
- * Utility functions for localStorage operations
- * Provides a safe and reusable way to interact with localStorage
+ * Check if localStorage is available
+ * @returns {boolean} Whether localStorage is available
  */
+export const isAvailable = () => {
+  try {
+    if (typeof window === 'undefined') return false
+    const testKey = '__localStorage_test__'
+    localStorage.setItem(testKey, 'test')
+    localStorage.removeItem(testKey)
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
 /**
  * Safely get an item from localStorage
@@ -38,11 +56,18 @@
  * @param {any} defaultValue - The default value to return if key doesn't exist
  * @returns {any} The stored value or default value
  */
-export const getLocalStorageItem = (key, defaultValue = null) => {
+export const getItem = (key, defaultValue = null) => {
   try {
     if (typeof window === 'undefined') return defaultValue
     const item = localStorage.getItem(key)
-    return item ? JSON.parse(item) : defaultValue
+    if (!item) return defaultValue
+    
+    try {
+      return JSON.parse(item)
+    } catch (parseError) {
+      console.warn(`localStorage key "${key}" contains non-JSON data, returning raw value:`, item)
+      return item
+    }
   } catch (error) {
     console.warn(`Error reading localStorage key "${key}":`, error)
     return defaultValue
@@ -55,7 +80,7 @@ export const getLocalStorageItem = (key, defaultValue = null) => {
  * @param {any} value - The value to store
  * @returns {boolean} Success status
  */
-export const setLocalStorageItem = (key, value) => {
+export const setItem = (key, value) => {
   try {
     if (typeof window === 'undefined') return false
     localStorage.setItem(key, JSON.stringify(value))
@@ -71,7 +96,7 @@ export const setLocalStorageItem = (key, value) => {
  * @param {string} key - The localStorage key
  * @returns {boolean} Success status
  */
-export const removeLocalStorageItem = (key) => {
+export const removeItem = (key) => {
   try {
     if (typeof window === 'undefined') return false
     localStorage.removeItem(key)
@@ -83,26 +108,10 @@ export const removeLocalStorageItem = (key) => {
 }
 
 /**
- * Check if localStorage is available
- * @returns {boolean} Whether localStorage is available
- */
-export const isLocalStorageAvailable = () => {
-  try {
-    if (typeof window === 'undefined') return false
-    const testKey = '__localStorage_test__'
-    localStorage.setItem(testKey, 'test')
-    localStorage.removeItem(testKey)
-    return true
-  } catch (error) {
-    return false
-  }
-}
-
-/**
  * Clear all localStorage data
  * @returns {boolean} Success status
  */
-export const clearLocalStorage = () => {
+export const clearAll = () => {
   try {
     if (typeof window === 'undefined') return false
     localStorage.clear()
@@ -113,13 +122,59 @@ export const clearLocalStorage = () => {
   }
 }
 
-// Dark mode specific localStorage functions
+// =============================================================================
+// THEME MANAGEMENT
+// =============================================================================
+
+/**
+ * Get the saved theme preference
+ * @returns {string} The saved theme name or 'default' if not set
+ */
+export const getTheme = () => {
+  return getItem('theme', 'default')
+}
+
+/**
+ * Set the theme preference
+ * @param {string} theme - The theme name to save
+ * @returns {boolean} Success status
+ */
+export const setTheme = (theme) => {
+  if (!theme || typeof theme !== 'string') {
+    console.warn('Invalid theme value. Must be a non-empty string.')
+    return false
+  }
+  return setItem('theme', theme)
+}
+
+/**
+ * Remove the theme preference
+ * @returns {boolean} Success status
+ */
+export const removeTheme = () => {
+  return removeItem('theme')
+}
+
+/**
+ * Get the effective theme setting with fallback
+ * @param {string} defaultTheme - Default theme if none is saved
+ * @returns {string} The theme name to use
+ */
+export const getEffectiveTheme = (defaultTheme = 'default') => {
+  const savedTheme = getTheme()
+  return savedTheme || defaultTheme
+}
+
+// =============================================================================
+// DARK MODE MANAGEMENT
+// =============================================================================
+
 /**
  * Get the saved dark mode preference
  * @returns {string|null} 'dark', 'light', or null if not set
  */
-export const getDarkModePreference = () => {
-  return getLocalStorageItem('mode', null)
+export const getDarkMode = () => {
+  return getItem('mode', null)
 }
 
 /**
@@ -127,19 +182,19 @@ export const getDarkModePreference = () => {
  * @param {'dark'|'light'} mode - The mode to save
  * @returns {boolean} Success status
  */
-export const setDarkModePreference = (mode) => {
+export const setDarkMode = (mode) => {
   if (mode !== 'dark' && mode !== 'light') {
     console.warn('Invalid dark mode value. Use "dark" or "light".')
     return false
   }
-  return setLocalStorageItem('mode', mode)
+  return setItem('mode', mode)
 }
 
 /**
  * Check if user prefers dark mode based on system settings
  * @returns {boolean} Whether system prefers dark mode
  */
-export const getSystemDarkModePreference = () => {
+export const getSystemDarkMode = () => {
   if (typeof window === 'undefined') return false
   return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
@@ -148,17 +203,68 @@ export const getSystemDarkModePreference = () => {
  * Get the effective dark mode setting (saved preference or system preference)
  * @returns {boolean} Whether dark mode should be enabled
  */
-export const getEffectiveDarkModePreference = () => {
-  const savedMode = getDarkModePreference()
+export const getEffectiveDarkMode = () => {
+  const savedMode = getDarkMode()
   
   if (savedMode === 'dark') return true
   if (savedMode === 'light') return false
   
   // If no saved preference, use system preference
-  return getSystemDarkModePreference()
+  return getSystemDarkMode()
 }
 
-// Generic preference management functions
+// =============================================================================
+// COMBINED THEME AND MODE MANAGEMENT
+// =============================================================================
+
+/**
+ * Get combined theme and mode preferences
+ * @returns {object} Object with theme and mode properties
+ */
+export const getThemeAndMode = () => {
+  return {
+    theme: getTheme(),
+    mode: getDarkMode(),
+    effectiveMode: getEffectiveDarkMode()
+  }
+}
+
+/**
+ * Set both theme and mode preferences
+ * @param {string} theme - The theme name
+ * @param {'dark'|'light'} mode - The mode preference
+ * @returns {object} Success status for both operations
+ */
+export const setThemeAndMode = (theme, mode) => {
+  const themeSuccess = setTheme(theme)
+  const modeSuccess = setDarkMode(mode)
+  
+  return {
+    theme: themeSuccess,
+    mode: modeSuccess,
+    success: themeSuccess && modeSuccess
+  }
+}
+
+/**
+ * Reset all theme and mode preferences
+ * @returns {object} Success status for both operations
+ */
+export const resetThemeAndMode = () => {
+  const themeSuccess = removeTheme()
+  const modeSuccess = removeItem('mode')
+  
+  return {
+    theme: themeSuccess,
+    mode: modeSuccess,
+    success: themeSuccess && modeSuccess
+  }
+}
+
+// =============================================================================
+// GENERIC USER PREFERENCES
+// =============================================================================
+
 /**
  * Get user preference with fallback
  * @param {string} key - The preference key
@@ -166,7 +272,7 @@ export const getEffectiveDarkModePreference = () => {
  * @returns {any} The preference value
  */
 export const getUserPreference = (key, defaultValue = null) => {
-  return getLocalStorageItem(`user_pref_${key}`, defaultValue)
+  return getItem(`user_pref_${key}`, defaultValue)
 }
 
 /**
@@ -176,7 +282,7 @@ export const getUserPreference = (key, defaultValue = null) => {
  * @returns {boolean} Success status
  */
 export const setUserPreference = (key, value) => {
-  return setLocalStorageItem(`user_pref_${key}`, value)
+  return setItem(`user_pref_${key}`, value)
 }
 
 /**
@@ -185,5 +291,35 @@ export const setUserPreference = (key, value) => {
  * @returns {boolean} Success status
  */
 export const removeUserPreference = (key) => {
-  return removeLocalStorageItem(`user_pref_${key}`)
+  return removeItem(`user_pref_${key}`)
+}
+
+/**
+ * Clean up legacy localStorage data by re-saving with proper JSON formatting
+ * @param {string[]} keys - Array of keys to clean up
+ * @returns {boolean} Success status
+ */
+export const cleanupLegacyData = (keys = ['theme', 'mode']) => {
+  try {
+    if (typeof window === 'undefined') return false
+    
+    keys.forEach(key => {
+      const rawValue = localStorage.getItem(key)
+      if (rawValue) {
+        try {
+          // Try to parse - if it fails, we need to clean it up
+          JSON.parse(rawValue)
+        } catch (error) {
+          // Re-save with proper JSON formatting
+          console.log(`Cleaning up legacy data for key "${key}":`, rawValue)
+          setItem(key, rawValue)
+        }
+      }
+    })
+    
+    return true
+  } catch (error) {
+    console.warn('Error cleaning up legacy localStorage data:', error)
+    return false
+  }
 }

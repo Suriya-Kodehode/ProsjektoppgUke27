@@ -19,3 +19,8 @@ export function low(str) {
 export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
+
+// Helper to convert bg classes to hover classes
+export function getHoverClass(bgClass) {
+  return bgClass ? bgClass.replace('bg-', 'hover:bg-') : ''
+}
