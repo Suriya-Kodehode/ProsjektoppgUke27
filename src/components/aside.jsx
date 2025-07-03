@@ -1,31 +1,40 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useDarkMode } from '../utility/darkmode'
-import { Button, IconButton } from './UI/buttons'
+import { Button } from './UI/buttons'
+import { SearchInput } from './UI/input'
 import { cn } from '../utility/tools'
-import { Home, User, Settings, Search, X } from '../assets/svg'
+import { Home, User, Settings, Hamburger } from '../assets/svg'
+import { getThemeStyles } from '../style/styling'
 
 const Aside = () => {
-    const { currentTheme } = useDarkMode()
+    const { currentTheme, darkMode } = useDarkMode()
+    const theme = useMemo(() => getThemeStyles(currentTheme, darkMode))
     const [isExpanded, setIsExpanded] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
     const sidebarRef = useRef(null)
 
     const styles = {
-        asideTop: cn("flex justify-start items-center col-span-1 row-span-1 pt-0.25"),
+        asideTop: cn("flex justify-start items-center col-span-1 row-span-1"),
         asideContent: cn("flex flex-col items-center col-span-1 row-span-2 pt-1"),
         collapsedNav: cn("flex flex-col gap-2 w-full items-center"),
-        overlay: cn("fixed inset-0 z-40 bg-black/50 transition-opacity duration-300", 
-                    isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"),
-        sidebar: cn("fixed left-0 top-0 h-full w-64 z-50 bg-white dark:bg-gray-800 shadow-xl",
-                   "transform transition-transform duration-300 ease-in-out",
+        
+        overlay: cn("fixed inset-0 z-40 transition-opacity duration-300 bg-opacity-50",
+                    isExpanded ? "opacity-50" : "opacity-0 pointer-events-none"),
+        
+        sidebar: cn("fixed left-0 top-0 h-full w-auto z-50 shadow-xl transform transition-transform duration-300 ease-in-out",
+                   theme.bg, theme.text, theme.border,
                    isExpanded ? "translate-x-0" : "-translate-x-full"),
-        content: cn("flex flex-col h-full p-4"),
+        
+        content: cn("flex flex-col h-full w-[20rem] py-1 px-1", theme.primary),
         nav: cn("flex flex-col gap-1"),
         navItem: cn("flex items-center gap-3 w-full justify-start"),
-        section: cn("mb-6"),
-        title: cn("text-sm font-semibold mb-2 text-gray-600 dark:text-gray-400"),
+        section: cn("mb-5"),
+        
+        title: cn("text-sm font-semibold mb-2", theme.textMuted),
+        
         icon: cn("w-1.5 h-1.5 cursor-pointer"),
-        iconTab: cn("w-3 h-3 cursor-pointer"),
-        x: cn("absolute top-2 right-2")
+        iconTab: cn("w-2 h-2 cursor-pointer"),
+        search: cn("w-full cursor-pointer"),
     }
 
     // Close handlers
@@ -44,27 +53,19 @@ const Aside = () => {
         return () => document.body.style.overflow = 'unset'
     }, [isExpanded])
 
-    // Compact button props
-    const btnProps = { size: "md", theme: currentTheme }
-    const iconBtnProps = { ...btnProps, variant: "ghost", className: styles.iconTab }
-    const navBtnProps = { ...btnProps, variant: "ghost", className: styles.navItem }
-
     return (
-        <>
+        <div>
             {/* Collapsed Sidebar */}
             <div className={styles.asideTop}>
-                <Button {...btnProps} variant="primary" className="cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-                    ☰
+                <Button size='xs' variant="ghost" onClick={() => setIsExpanded(!isExpanded)}>
+                    <Hamburger 
+                        className={styles.iconTab}
+                    />
                 </Button>
             </div>
             
             <div className={styles.asideContent}>
-                <nav className={styles.collapsedNav}>
-                    <IconButton {...iconBtnProps} title="Home"><Home /></IconButton>
-                    <IconButton {...iconBtnProps} title="Profile"><User /></IconButton>
-                    <IconButton {...iconBtnProps} title="Settings"><Settings /></IconButton>
-                    <IconButton {...iconBtnProps} title="Search"><Search /></IconButton>
-                </nav>
+                
             </div>
 
             {/* Overlay */}
@@ -73,27 +74,38 @@ const Aside = () => {
             {/* Expanded Sidebar */}
             <div ref={sidebarRef} className={styles.sidebar}>
                 <div className={styles.content}>
-                    <IconButton {...iconBtnProps} className={styles.x} onClick={() => setIsExpanded(false)}>
-                        <X className={styles.icon}/>
-                    </IconButton>
-
                     <div className={styles.section}>
                         <h3 className={styles.title}>Navigation</h3>
                         <nav className={styles.nav}>
-                            <Button {...navBtnProps}><Home className={styles.icon} /><span>Home</span></Button>
-                            <Button {...navBtnProps}><User className={styles.icon} /><span>Profile</span></Button>
-                            <Button {...navBtnProps}><Settings className={styles.icon} /><span>Settings</span></Button>
+                            <Button variant='secondary'>
+                                <Home className={styles.icon} />
+                                <span>Home</span>
+                            </Button>
+                            <Button variant='secondary'>
+                                <User className={styles.icon} />
+                                <span>Profile</span>
+                            </Button>
+                            <Button variant='secondary'>
+                                <Settings className={styles.icon} />
+                                <span>Settings</span>
+                            </Button>
                         </nav>
                     </div>
 
                     <div className={styles.section}>
-                        <Button {...btnProps} variant="outline" className={styles.navItem}>
-                            <Search className={styles.icon} /><span>Search</span>
-                        </Button>
+                        <SearchInput
+                            size="sm"
+                            iconPosition='left'
+                            iconClassName="cursor-pointer"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onEnter={(query) => console.log('Searching for:', query)}
+                            placeholder="Search..."
+                        />
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

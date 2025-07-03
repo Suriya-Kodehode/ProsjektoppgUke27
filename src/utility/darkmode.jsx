@@ -20,29 +20,46 @@ export const useDarkMode = () => {
     const shouldUseDarkMode = getEffectiveDarkMode()
     const storedTheme = getTheme()
     
+    // Ensure the stored theme exists in our themes object
+    const validTheme = themes[storedTheme] ? storedTheme : 'default'
+    
     setDarkMode(shouldUseDarkMode)
-    setCurrentTheme(storedTheme)
+    setCurrentTheme(validTheme)
+    
+    // If the stored theme was invalid, update localStorage with the valid one
+    if (validTheme !== storedTheme) {
+      setTheme(validTheme)
+    }
     
     // Apply theme classes to document
-    applyTheme(storedTheme, shouldUseDarkMode)
+    applyTheme(validTheme, shouldUseDarkMode)
   }, [])
 
   // Apply theme and dark mode classes to document
   const applyTheme = (themeName, isDark) => {
     const html = document.documentElement
     
-    // Remove all existing theme classes
+    // Remove all existing theme-related classes
+    const classesToRemove = []
+    
+    // Collect all theme classes to remove
     Object.keys(themes).forEach(theme => {
-      html.classList.remove(`theme-${theme}`)
+      classesToRemove.push(`theme-${theme}`)
+      classesToRemove.push(`theme-${theme}-light`)
+      classesToRemove.push(`theme-${theme}-dark`)
     })
     
-    // Remove dark class
-    html.classList.remove('dark')
+    // Also remove standalone dark class
+    classesToRemove.push('dark')
     
-    // Add new theme class
-    html.classList.add(`theme-${themeName}`)
+    // Remove all collected classes
+    classesToRemove.forEach(cls => html.classList.remove(cls))
     
-    // Add dark class if needed
+    // Add the single new theme class
+    const themeClass = isDark ? `theme-${themeName}-dark` : `theme-${themeName}-light`
+    html.classList.add(themeClass)
+    
+    // Also add the 'dark' class for CSS compatibility
     if (isDark) {
       html.classList.add('dark')
     }
@@ -70,10 +87,17 @@ export const useDarkMode = () => {
 
   // Theme controls
   const changeTheme = (themeName) => {
+    // Validate that the theme exists
     if (themes[themeName]) {
       setCurrentTheme(themeName)
       setTheme(themeName)
       applyTheme(themeName, darkMode)
+    } else {
+      console.warn(`Theme "${themeName}" not found. Available themes:`, Object.keys(themes))
+      // Fall back to default theme
+      setCurrentTheme('default')
+      setTheme('default')
+      applyTheme('default', darkMode)
     }
   }
 
@@ -132,6 +156,7 @@ export const DarkModeToggle = ({
   toggleDarkMode, 
   className = '', 
   size = 'md',
+  variant = 'primary',
   theme = null
 }) => {
   // Auto-detect current theme if none provided
@@ -139,7 +164,7 @@ export const DarkModeToggle = ({
   if (!theme) {
     const classList = document.documentElement.classList
     Object.keys(themes).forEach(themeKey => {
-      if (classList.contains(`theme-${themeKey}`)) {
+      if (classList.contains(`theme-${themeKey}-light`) || classList.contains(`theme-${themeKey}-dark`)) {
         effectiveTheme = themeKey
       }
     })
@@ -152,7 +177,7 @@ export const DarkModeToggle = ({
   return (
     <IconButton
       onClick={toggleDarkMode}
-      variant="primary"
+      variant={variant}
       size={size}
       theme={effectiveTheme}
       className={className}
@@ -198,6 +223,7 @@ export const ThemeControls = ({
   themes,
   className = '',
   showLabels = true,
+  variant = 'primary',
   theme = null
 }) => {
   return (
@@ -223,6 +249,7 @@ export const ThemeControls = ({
         <DarkModeToggle 
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
+          variant={variant}
           theme={theme}
         />
       </div>

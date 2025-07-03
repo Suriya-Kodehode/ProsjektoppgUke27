@@ -7,13 +7,13 @@ export default {
   ],
   darkMode: "class",
   safelist: [
-  
+    
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--color-background)",
+        foreground: "var(--color-foreground)",
       },
     },
   },

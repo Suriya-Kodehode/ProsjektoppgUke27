@@ -5,8 +5,6 @@ import { ButtonLoadingSpinner, IconLoadingSpinner } from '../../assets/svg'
 
 // Generate themed button variants
 const getThemedVariants = (themeName) => {
-  const isDark = document.documentElement.classList.contains('dark')
-  
   // Use provided theme name or detect current theme from document classes
   let currentThemeName = themeName || 'default'
   if (!themeName) {
@@ -18,16 +16,16 @@ const getThemedVariants = (themeName) => {
     })
   }
   
-  const themeStyles = getThemeStyles(currentThemeName, isDark)
+  const theme = getThemeStyles(currentThemeName)
   
   return {
-    primary: cn(themeStyles.primary, 'hover:opacity-90 text-white focus:ring-2', themeStyles.focusRing, 'focus:ring-opacity-50 transition-all duration-200'),
-    secondary: cn(themeStyles.secondary, 'hover:opacity-90', themeStyles.text, themeStyles.focusRing, 'focus:ring-2 focus:ring-opacity-50 transition-all duration-200'),
+    primary: cn(theme.primary, 'hover:opacity-90 text-white focus:ring-2', theme.focusRing, 'focus:ring-opacity-50 transition-all duration-200'),
+    secondary: cn(theme.secondary, 'hover:opacity-90', theme.focusRing, 'focus:ring-2 focus:ring-opacity-50 transition-all duration-200'),
     success: cn('bg-green-600 hover:bg-green-700 text-white focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 dark:bg-green-500 dark:hover:bg-green-600 transition-all duration-200'),
     danger: cn('bg-red-600 hover:bg-red-700 text-white focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 dark:bg-red-500 dark:hover:bg-red-600 transition-all duration-200'),
     warning: cn('bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 dark:bg-yellow-500 dark:hover:bg-yellow-600 transition-all duration-200'),
-    outline: cn('border-2', themeStyles.border, 'bg-transparent', getHoverClass(themeStyles.accent), themeStyles.text, 'focus:ring-2', themeStyles.focusRing, 'focus:ring-opacity-50 transition-all duration-200'),
-    ghost: cn('bg-transparent', getHoverClass(themeStyles.accent), themeStyles.text, 'focus:ring-2', themeStyles.focusRing, 'focus:ring-opacity-50 transition-all duration-200')
+    outline: cn('border-2', theme.border, 'bg-transparent', getHoverClass(theme.accent), theme.text, 'focus:ring-2', theme.focusRing, 'focus:ring-opacity-50 transition-all duration-200'),
+    ghost: cn('bg-transparent dark:bg-transparent', getHoverClass(theme.accent), 'focus:ring-2', theme.focusRing, 'focus:ring-opacity-50 transition-all duration-200')
   }
 }
 
