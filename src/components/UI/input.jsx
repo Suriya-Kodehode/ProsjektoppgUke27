@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { cn } from '../../utility/tools'
 import { getThemeStyles } from '../../style/styling'
-import { useDarkMode } from '../../utility/darkmode'
+import { useDarkModeContext } from '../../utility/darkmode'
 import { Search } from '../../assets/svg'
 
 // Base Input component with theme support
@@ -17,7 +17,7 @@ const Input = forwardRef(({
     useTheme = true,
     ...props 
 }, ref) => {
-    const { currentTheme } = useDarkMode()
+    const { currentTheme } = useDarkModeContext()
     const theme = useTheme ? getThemeStyles(currentTheme) : {}
 
     const variants = {
@@ -34,7 +34,7 @@ const Input = forwardRef(({
         ),
         filled: cn(
             "border-transparent focus:ring-2",
-            useTheme && "bg-gray-100 dark:bg-gray-800",
+            useTheme && "bg-gray-100 dark:bg-gray-600",
             useTheme && theme.text,
             useTheme && theme.focusRing
         )

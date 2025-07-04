@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { useDarkMode } from '../utility/darkmode'
+import { useNavigate } from 'react-router-dom'
+import { useDarkModeContext } from '../utility/darkmode'
 import { Button } from './UI/buttons'
 import { SearchInput } from './UI/input'
 import { cn } from '../utility/tools'
@@ -7,11 +8,12 @@ import { Home, User, Settings, Hamburger } from '../assets/svg'
 import { getThemeStyles } from '../style/styling'
 
 const Aside = () => {
-    const { currentTheme, darkMode } = useDarkMode()
-    const theme = useMemo(() => getThemeStyles(currentTheme, darkMode))
+    const { currentTheme, darkMode } = useDarkModeContext()
+    const theme = useMemo(() => getThemeStyles(currentTheme, darkMode), [currentTheme, darkMode])
     const [isExpanded, setIsExpanded] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const sidebarRef = useRef(null)
+    const navigate = useNavigate()
 
     const styles = {
         asideTop: cn("flex justify-start items-center col-span-1 row-span-1"),
@@ -34,7 +36,6 @@ const Aside = () => {
         
         icon: cn("w-1.5 h-1.5 cursor-pointer"),
         iconTab: cn("w-2 h-2 cursor-pointer"),
-        search: cn("w-full cursor-pointer"),
     }
 
     // Close handlers
@@ -52,6 +53,11 @@ const Aside = () => {
         document.body.style.overflow = isExpanded ? 'hidden' : 'unset'
         return () => document.body.style.overflow = 'unset'
     }, [isExpanded])
+
+    function handleNav(path) {
+        navigate(path)
+        setIsExpanded(false)
+    }
 
     return (
         <div>
@@ -77,7 +83,7 @@ const Aside = () => {
                     <div className={styles.section}>
                         <h3 className={styles.title}>Navigation</h3>
                         <nav className={styles.nav}>
-                            <Button variant='secondary'>
+                            <Button variant='secondary' onClick={() => handleNav('/home')}>
                                 <Home className={styles.icon} />
                                 <span>Home</span>
                             </Button>
@@ -101,6 +107,7 @@ const Aside = () => {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onEnter={(query) => console.log('Searching for:', query)}
                             placeholder="Search..."
+                            variant="filled"
                         />
                     </div>
                 </div>

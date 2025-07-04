@@ -1,12 +1,12 @@
 
 
-import { useDarkMode, DarkModeToggle } from '../utility/darkmode'
+import { useDarkModeContext, DarkModeToggle } from '../utility/darkmode'
 import { cn } from '../utility/tools'
 import { getThemeStyles } from '../style/styling'
 import { useMemo } from 'react'
 
 const Header = () => {
-    const { darkMode, toggleDarkMode, currentTheme } = useDarkMode()
+    const { darkMode, toggleDarkMode, currentTheme } = useDarkModeContext()
     const theme = useMemo(() => getThemeStyles(currentTheme, darkMode), [currentTheme, darkMode])
 
     const styles = {

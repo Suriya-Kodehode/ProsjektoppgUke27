@@ -1,8 +1,21 @@
-// Capitalize the first letter of a string
+// =============================================================================
+// STRING UTILITIES
+// =============================================================================
+
+/**
+ * Capitalize the first letter of a string
+ * @param {string} str - The string to capitalize
+ * @returns {string} String with first letter capitalized
+ */
 export function cap(str) {
   return str && str[0].toUpperCase() + str.slice(1);
 }
-// Capitalize the first letter of each word in a string
+
+/**
+ * Capitalize the first letter of each word in a string
+ * @param {string} str - The string to capitalize words in
+ * @returns {string} String with each word capitalized
+ */
 export function capW(str) {
   return str ? str
     .split(" ")
@@ -10,23 +23,50 @@ export function capW(str) {
     .join(" ")
     : str;
 }
-// Convert the entire string to lowercase
+
+/**
+ * Convert the entire string to lowercase
+ * @param {string} str - The string to convert
+ * @returns {string} Lowercase string
+ */
 export function low(str) {
   return str ? str.toLowerCase() : str;
 }
 
-// Utility function to concatenate class names with spaces
+// =============================================================================
+// CSS CLASS UTILITIES
+// =============================================================================
+
+/**
+ * Utility function to concatenate class names with spaces
+ * Filters out falsy values for conditional classes
+ * @param {...string} classes - Class names to concatenate
+ * @returns {string} Concatenated class string
+ */
 export function cn(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Helper to convert bg classes to hover classes
+/**
+ * Helper to convert background classes to hover classes
+ * @param {string} bgClass - Background class (e.g., 'bg-blue-500')
+ * @returns {string} Hover class (e.g., 'hover:bg-blue-500')
+ */
 export function getHoverClass(bgClass) {
   return bgClass ? bgClass.replace('bg-', 'hover:bg-') : ''
 }
 
-// Theme utility functions
-// Utility function to get theme styles - combines light and dark classes using cn
+// =============================================================================
+// THEME UTILITIES
+// =============================================================================
+
+/**
+ * Get theme styles - combines light and dark classes using cn
+ * @param {string} themeName - Name of the theme to get
+ * @param {Object} themes - Themes object containing theme definitions
+ * @param {boolean|null} isDarkMode - Explicit dark mode override (optional)
+ * @returns {Object} Theme styles object with combined classes
+ */
 export const getThemeStyles = (themeName, themes, isDarkMode = null) => {
   const theme = themes[themeName] || themes.default
   
@@ -54,7 +94,11 @@ export const getThemeStyles = (themeName, themes, isDarkMode = null) => {
   }
 }
 
-// Helper function to apply theme classes to an element
+/**
+ * Helper function to apply theme classes to an element
+ * @param {HTMLElement} element - DOM element to apply classes to
+ * @param {Object} styles - Styles object with class names
+ */
 export const applyThemeClasses = (element, styles) => {
   if (!element) return
   

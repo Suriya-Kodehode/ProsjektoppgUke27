@@ -1,11 +1,52 @@
 import { getThemeStyles as getThemeStylesUtil, applyThemeClasses } from '../utility/tools'
 
+// =============================================================================
+// CUSTOM GRADIENTS
+// =============================================================================
+
+// Custom gradient utilities that can be used with Tailwind's gradient classes
+export const gradients = {
+  default: {
+    name: 'Default',
+    gradient: 'bg-gradient-to-br from-blue-100 via-cyan-50 to-blue-200 dark:from-blue-900 dark:via-teal-800 dark:to-blue-950'
+  },
+  ocean: {
+    name: 'Ocean', 
+    gradient: 'bg-gradient-to-br from-slate-100 to-cyan-100 dark:from-slate-900 dark:to-cyan-900'
+  },
+  forest: {
+    name: 'Forest',
+    gradient: 'bg-gradient-to-br from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-900'
+  },
+  sunset: {
+    name: 'Sunset',
+    gradient: 'bg-gradient-to-br from-orange-100 to-red-200 dark:from-orange-900 dark:to-red-900'
+  },
+  purple: {
+    name: 'Purple',
+    gradient: 'bg-gradient-to-br from-purple-100 to-violet-200 dark:from-purple-900 dark:to-violet-900'
+  },
+  midnight: {
+    name: 'Midnight',
+    gradient: 'bg-gradient-to-br from-indigo-100 to-blue-200 dark:from-indigo-900 dark:to-blue-900'
+  }
+}
+
+// Helper function to get gradient for a theme
+export const getThemeGradient = (themeName) => {
+  return gradients[themeName]?.gradient || gradients.default.gradient
+}
+
+// =============================================================================
+// THEME DEFINITIONS
+// =============================================================================
+
 // Define available themes
 export const themes = {
   default: {
     name: 'Default',
-    light: { bg: 'bg-white', text: 'text-[#262626]', textMuted: 'text-[#f3f4f6]/70', primary: 'bg-blue-600', secondary: 'bg-blue-200', accent: 'bg-blue-100', border: 'border-gray-300', focusRing: 'focus:ring-gray-500', iconColor: '#262626' },
-    dark: { bg: 'dark:bg-gray-900', text: 'dark:text-[#f3f4f6]', textMuted: 'dark:text-[#262626]/70', primary: 'dark:bg-blue-500', secondary: 'dark:bg-blue-700', accent: 'dark:bg-blue-900', border: 'dark:border-gray-600', focusRing: 'dark:focus:ring-gray-400', iconColor: '#f3f4f6' }
+    light: { bg: 'bg-white', text: 'text-[#262626]', textMuted: 'text-[#494949]/70', primary: 'bg-blue-500', secondary: 'bg-blue-300', accent: 'bg-blue-100', border: 'border-gray-300', focusRing: 'focus:ring-gray-500', iconColor: '#262626' },
+    dark: { bg: 'dark:bg-gray-900', text: 'dark:text-[#f3f4f6]', textMuted: 'dark:text-[#b9b9b9]/70', primary: 'dark:bg-blue-800', secondary: 'dark:bg-blue-500', accent: 'dark:bg-blue-900', border: 'dark:border-gray-600', focusRing: 'dark:focus:ring-gray-400', iconColor: '#f3f4f6' }
   },
   ocean: {
     name: 'Ocean',
@@ -34,6 +75,7 @@ export const themes = {
   }
 }
 
+// Helper function to get theme styles
 export const getThemeStyles = (themeName, isDarkMode = null) => {
   return getThemeStylesUtil(themeName, themes, isDarkMode)
 }

@@ -5,10 +5,10 @@ import { themes } from '../style/styling'
 import { SunIcon, MoonIcon } from '../assets/svg'
 
 // =============================================================================
-// DARK MODE HOOK
+// DARK MODE HOOK (Internal use only)
 // =============================================================================
 
-export const useDarkMode = () => {
+const useDarkMode = () => {
   const [darkMode, setDarkMode] = useState(false)
   const [currentTheme, setCurrentTheme] = useState('default')
 

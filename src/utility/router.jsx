@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { useEffect } from "react";
 import { baseUrl } from "../../config";
+import { DocumentInjector } from "./injector";
+import { DarkModeProvider } from "./darkmode";
 
 import App from "../App.jsx";
 import NotFound from "@/pages/notfound.jsx";
@@ -33,23 +34,11 @@ const router = createBrowserRouter(
     }
 );
 
-function Baseinjector({ base }) {
-    useEffect(() => {
-        let baseElement = document.querySelector("base");
-        if (!baseElement) {
-            baseElement = document.createElement("base");
-            document.head.appendChild(baseElement);
-        }
-        baseElement.setAttribute("href", base);
-    }, [base]);
-    return null;
-}
-
 const AppRouter = () => (
-    <>
-        <Baseinjector base={baseUrl} />
+    <DarkModeProvider>
+        <DocumentInjector base={baseUrl} />
         <RouterProvider router={router} />
-    </>
+    </DarkModeProvider>
 );
 
 export default AppRouter;

@@ -1,22 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { cn, getHoverClass } from '../../utility/tools'
-import { themes, getThemeStyles } from '../../style/styling'
+import { getThemeStyles } from '../../style/styling'
+import { useDarkModeContext } from '../../utility/darkmode'
 import { ButtonLoadingSpinner, IconLoadingSpinner } from '../../assets/svg'
 
 // Generate themed button variants
-const getThemedVariants = (themeName) => {
-  // Use provided theme name or detect current theme from document classes
-  let currentThemeName = themeName || 'default'
-  if (!themeName) {
-    const classList = document.documentElement.classList
-    Object.keys(themes).forEach(themeKey => {
-      if (classList.contains(`theme-${themeKey}`)) {
-        currentThemeName = themeKey
-      }
-    })
-  }
-  
-  const theme = getThemeStyles(currentThemeName)
+const getThemedVariants = (themeName, darkMode) => {
+  const theme = getThemeStyles(themeName, darkMode)
   
   return {
     primary: cn(theme.primary, 'hover:opacity-90 text-white focus:ring-2', theme.focusRing, 'focus:ring-opacity-50 transition-all duration-200'),
@@ -45,11 +35,17 @@ export const Button = ({
   title,
   ...props
 }) => {
+  const { currentTheme, darkMode } = useDarkModeContext()
+  const themeStyles = useMemo(() => 
+    getThemedVariants(theme || currentTheme, darkMode), 
+    [theme, currentTheme, darkMode]
+  )
+  
   const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed'
   const defaultRounding = 'rounded-lg'
   
   // Get themed variants based on provided theme or current theme and dark mode
-  const variants = getThemedVariants(theme)
+  const variants = themeStyles
   
   const sizes = {
     xs: 'px-[8px] py-[4px] text-xs',
@@ -99,11 +95,17 @@ export const IconButton = ({
   title,
   ...props
 }) => {
+  const { currentTheme, darkMode } = useDarkModeContext()
+  const themeStyles = useMemo(() => 
+    getThemedVariants(theme || currentTheme, darkMode), 
+    [theme, currentTheme, darkMode]
+  )
+  
   const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed'
   const defaultRounding = 'rounded-lg'
   
   // Get themed variants based on provided theme or current theme and dark mode
-  const variants = getThemedVariants(theme)
+  const variants = themeStyles
   
   const sizes = {
     xs: 'p-[4px] text-xs',
