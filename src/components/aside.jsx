@@ -6,12 +6,14 @@ import { SearchInput } from './UI/input'
 import { cn } from '../utility/tools'
 import { Home, User, Settings, Hamburger } from '../assets/svg'
 import { getThemeStyles } from '../style/styling'
+import SettingsModal from './settings';
 
 const Aside = () => {
     const { currentTheme, darkMode } = useDarkModeContext()
     const theme = useMemo(() => getThemeStyles(currentTheme, darkMode), [currentTheme, darkMode])
     const [isExpanded, setIsExpanded] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
+    const [showSettings, setShowSettings] = useState(false)
     const sidebarRef = useRef(null)
     const navigate = useNavigate()
 
@@ -28,13 +30,13 @@ const Aside = () => {
                    isExpanded ? "translate-x-0" : "-translate-x-full"),
         
         content: cn("flex flex-col h-full w-[20rem] py-1 px-1", theme.primary),
-        nav: cn("flex flex-col gap-1"),
+        nav: cn("flex flex-col gap-1 [&>button]:cursor-pointer"),
         navItem: cn("flex items-center gap-3 w-full justify-start"),
         section: cn("mb-5"),
         
         title: cn("text-sm font-semibold mb-2", theme.textMuted),
         
-        icon: cn("w-1.5 h-1.5 cursor-pointer"),
+        icon: cn("w-1.5 h-1.5"),
         iconTab: cn("w-2 h-2 cursor-pointer"),
     }
 
@@ -91,7 +93,7 @@ const Aside = () => {
                                 <User className={styles.icon} />
                                 <span>Profile</span>
                             </Button>
-                            <Button variant='secondary'>
+                            <Button variant='secondary' onClick={() => { setShowSettings(true); setIsExpanded(false); }}>
                                 <Settings className={styles.icon} />
                                 <span>Settings</span>
                             </Button>
@@ -112,6 +114,9 @@ const Aside = () => {
                     </div>
                 </div>
             </div>
+            {showSettings && (
+                <SettingsModal onClose={() => { setShowSettings(false)}} />
+            )}
         </div>
     )
 }

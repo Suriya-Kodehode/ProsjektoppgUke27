@@ -46,7 +46,7 @@ export const themes = {
   default: {
     name: 'Default',
     light: { bg: 'bg-white', text: 'text-[#262626]', textMuted: 'text-[#494949]/70', primary: 'bg-blue-500', secondary: 'bg-blue-300', accent: 'bg-blue-100', border: 'border-gray-300', focusRing: 'focus:ring-gray-500', iconColor: '#262626' },
-    dark: { bg: 'dark:bg-gray-900', text: 'dark:text-[#f3f4f6]', textMuted: 'dark:text-[#b9b9b9]/70', primary: 'dark:bg-blue-800', secondary: 'dark:bg-blue-500', accent: 'dark:bg-blue-900', border: 'dark:border-gray-600', focusRing: 'dark:focus:ring-gray-400', iconColor: '#f3f4f6' }
+    dark: { bg: 'dark:bg-gray-900', text: 'dark:text-[#f3f4f6]', textMuted: 'dark:text-[#b9b9b9]/70', primary: 'dark:bg-[#3752ea]', secondary: 'dark:bg-[#6674e5]', accent: 'dark:bg-blue-900', border: 'dark:border-gray-600', focusRing: 'dark:focus:ring-gray-400', iconColor: '#f3f4f6' }
   },
   ocean: {
     name: 'Ocean',

@@ -8,7 +8,7 @@ export const TitleFaviconInjector = () => {
   const { currentTheme, darkMode } = useDarkModeContext()
 
   useEffect(() => {
-    console.log('TitleFaviconInjector: Theme/Dark mode changed:', currentTheme, darkMode)
+    // console.log('TitleFaviconInjector: Theme/Dark mode changed:', currentTheme, darkMode)
     
     // Dynamic title injection
     document.title = `${cap('prosjektoppgUke27')} - ${cap(currentTheme)} ${darkMode ? 'Dark' : 'Light'}`
@@ -17,7 +17,7 @@ export const TitleFaviconInjector = () => {
     const iconName = darkMode ? 'customizedIcon-dark.svg' : 'customizedIcon.svg'
     const iconPath = path('icons', iconName)
     
-    console.log('TitleFaviconInjector: Setting favicon to:', iconPath)
+    // console.log('TitleFaviconInjector: Setting favicon to:', iconPath)
 
     const favicon = document.querySelector('link[rel="icon"]')
     if (favicon) {

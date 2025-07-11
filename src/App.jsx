@@ -15,7 +15,7 @@ function App() {
 
   const styles = {
     appContainer: cn("grid grid-cols-[auto_1fr_1fr] grid-rows-[auto_1fr_5%] min-h-screen max-w-screen", themeGradient),
-    aside: "grid grid-cols-[1fr] grid-rows-[auto_1fr] justify-center col-span-1 row-span-3 w-full p-1",
+    aside: cn("grid grid-cols-[1fr] grid-rows-[auto_1fr] justify-center col-span-1 row-span-3 w-full p-1", theme.primary),
     header: "grid grid-cols-[1fr_1fr_1fr] col-span-2 p-1",
     main: "flex flex-col items-center col-start-2 col-end-4 row-start-2 row-end-3 p-1",
     footer: "flex flex-row items-center justify-center col-start-2 col-end-4 row-start-3 row-end-4 p-1",
