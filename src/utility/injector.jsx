@@ -11,7 +11,7 @@ export const TitleFaviconInjector = () => {
     // console.log('TitleFaviconInjector: Theme/Dark mode changed:', currentTheme, darkMode)
     
     // Dynamic title injection
-    document.title = `${cap('prosjektoppgUke27')} - ${cap(currentTheme)} ${darkMode ? 'Dark' : 'Light'}`
+    document.title = `${cap('prosjektoppgUke27')}`
 
     // Dynamic favicon injection
     const iconName = darkMode ? 'customizedIcon-dark.svg' : 'customizedIcon.svg'
