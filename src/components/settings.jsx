@@ -1,14 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDarkModeContext } from "../utility/darkmode";
 import { getThemeStyles } from "../style/styling";
 import { cn } from "../utility/tools";
 import { X } from "../assets/svg";
 import { Button } from "./UI/buttons";
-import { settingsButtons } from "./settingOptions/settingsButtons";
+import { getSettingsButtons } from "./settingOptions/settingsButtons";
+import ThemeSetting from "./settingOptions/themeSetting";
 
 const Settings = ({ onClose }) => {
     const { currentTheme, darkMode } = useDarkModeContext();
     const theme = useMemo(() => getThemeStyles(currentTheme, darkMode), [currentTheme, darkMode]);
+    const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+
+    const openThemeModal = () => setIsThemeModalOpen(true);
+    const closeThemeModal = () => setIsThemeModalOpen(false);
+
+    const settingsButtons = getSettingsButtons(openThemeModal);
 
     const styles = {
         container: cn("fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity duration-300"),
@@ -20,28 +27,33 @@ const Settings = ({ onClose }) => {
     }
 
     return (
-        <div className={styles.container}>
-            <div className={styles.bg}>
-                <button className={styles.closeButton} onClick={onClose}>
-                    <X />
-                </button>
-                <h2 className={styles.title}>Settings</h2>
-                <div className={styles.content}>
-                    {settingsButtons.map((button) => (
-                        <Button 
-                            key={button.id}
-                            variant={button.variant}
-                            size="md"
-                            theme={currentTheme}
-                            onClick={button.onClick}
-                            className={styles.button}
-                        >
-                            {button.text}
-                        </Button>
-                    ))}
+        <>
+            <div className={styles.container}>
+                <div className={styles.bg}>
+                    <button className={styles.closeButton} onClick={onClose}>
+                        <X />
+                    </button>
+                    <h2 className={styles.title}>Settings</h2>
+                    <div className={styles.content}>
+                        {settingsButtons.map((button) => (
+                            <Button 
+                                key={button.id}
+                                variant={button.variant}
+                                size="md"
+                                theme={currentTheme}
+                                onClick={button.onClick}
+                                className={styles.button}
+                            >
+                                {button.text}
+                            </Button>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+            {isThemeModalOpen && (
+                <ThemeSetting onClose={closeThemeModal} />
+            )}
+        </>
     )
 }
 

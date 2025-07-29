@@ -1,4 +1,27 @@
 // Settings buttons configuration
+export const getSettingsButtons = (openThemeModal) => [
+    {
+        id: 'theme',
+        text: 'Theme',
+        variant: 'primary',
+        onClick: openThemeModal
+    }
+    // Add more buttons here as needed
+    // {
+    //     id: 'language',
+    //     text: 'Language',
+    //     variant: 'secondary',
+    //     onClick: () => console.log('Language button clicked')
+    // },
+    // {
+    //     id: 'notifications',
+    //     text: 'Notifications',
+    //     variant: 'outline',
+    //     onClick: () => console.log('Notifications button clicked')
+    // }
+];
+
+// Deprecated - use getSettingsButtons instead
 export const settingsButtons = [
     {
         id: 'theme',
@@ -10,11 +33,6 @@ export const settingsButtons = [
         }
     },
 ];
-
-// Helper function to get settings buttons (for future extensibility)
-export const getSettingsButtons = () => {
-    return settingsButtons;
-};
 
 // Function to add new settings button dynamically (if needed)
 export const addSettingsButton = (buttonConfig) => {

@@ -204,7 +204,7 @@ export const ThemeSelector = ({
           className={`px-3 py-1 rounded-md text-sm transition-all ${
             currentTheme === key 
               ? 'bg-blue-600 text-white' 
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              : 'bg-gray-200 font-bold text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
           }`}
           title={`Switch to ${theme.name} theme`}
         >
@@ -226,11 +226,12 @@ export const ThemeControls = ({
   variant = 'primary',
   theme = null
 }) => {
+
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
       {showLabels && (
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <div className="flex flex-col gap-1 items-center">
+          <label className="text-sm font-medium">
             Theme
           </label>
           <ThemeSelector 
@@ -240,9 +241,9 @@ export const ThemeControls = ({
           />
         </div>
       )}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col items-center gap-1">
         {showLabels && (
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium">
             Mode
           </label>
         )}
